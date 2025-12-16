@@ -1,0 +1,36 @@
+<audio src="35 Track 35 1.mp3" style="width: 100%;" controls></audio>
+<div id = "speed">1</div>
+<script>
+    // пробел = пауза/воспроизведение
+    // стрелки влево/вправо = перемотка на 1 секунду
+    // стрелки вверх/вниз = скорость воспроизведения
+    document.addEventListener('keydown', function(event) {
+        const audio = document.querySelector('audio');
+        if (!audio) return;
+        console.log(event.key);
+        switch(event.key) {
+            case ' ':
+                event.preventDefault();
+                if (audio.paused) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+                break;
+            case 'ArrowLeft':
+                audio.currentTime = Math.max(0, audio.currentTime - 1);
+                break;
+            case 'ArrowRight':
+                audio.currentTime = Math.min(audio.duration, audio.currentTime + 1);
+                break;
+            case 'ArrowUp':
+                audio.playbackRate = Math.min(4, audio.playbackRate + 0.1);
+                document.getElementById('speed').textContent = audio.playbackRate.toFixed(1);
+                break;
+            case 'ArrowDown':
+                audio.playbackRate = Math.max(0.1, audio.playbackRate - 0.1);
+                document.getElementById('speed').textContent = audio.playbackRate.toFixed(1);
+                break;
+        }
+    });
+</script>
