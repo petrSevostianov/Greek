@@ -1,5 +1,6 @@
 {
     "explorer.autoReveal": false,
     "markdown.preview.scrollEditorWithPreview": false,
-    "markdown.preview.scrollPreviewWithEditor": false
+    "markdown.preview.scrollPreviewWithEditor": false,
+    "liveServer.settings.port": 5503
 }

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Sound</title>
+    </head>
+    <body>
+        <select id="fileSelector" style="width: 100%; margin-bottom: 10px;">
+            <option value="">Выберите аудиофайл...</option>
+            <option value="3_2016.mp3">3_2016.mp3</option>
+            <option value="3_2017.mp3">3_2017.mp3</option>
+            <option value="3_2018.mp3">3_2018.mp3</option>
+            <option value="3_215.mp3">3_215.mp3</option>
+        </select>
+        <audio id="audio" src="" style="width: 100%;" controls loop></audio>
+        <div id = "speed">1</div>
+        <script>
+            // Загрузка выбранного файла
+            document.getElementById('fileSelector').addEventListener('change', function(event) {
+                const audio = document.querySelector('audio');
+                audio.src = event.target.value;
+                if (event.target.value) {
+                    audio.load();
+                }
+                //save selected file in localStorage
+                localStorage.setItem('selectedAudio', event.target.value);
+            });
+
+            // Load selected file from localStorage
+            window.addEventListener('load', function() {
+                const selectedAudio = localStorage.getItem('selectedAudio');
+                if (selectedAudio) {
+                    const audio = document.querySelector('audio');
+                    audio.src = selectedAudio;
+                    audio.load();
+                    document.getElementById('fileSelector').value = selectedAudio;
+                }
+                const currentTime = localStorage.getItem('audioCurrentTime');
+                if (currentTime) {
+                    const audio = document.querySelector('audio');
+                    audio.currentTime = parseFloat(currentTime);
+                }
+            });
+
+            window.addEventListener('beforeunload', function() {
+                const audio = document.querySelector('audio');
+                localStorage.setItem('audioCurrentTime', audio.currentTime);
+            });
+
+            // пробел = пауза/воспроизведение
+            // стрелки влево/вправо = перемотка на 1 секунду
+            // стрелки вверх/вниз = скорость воспроизведения
+            document.addEventListener('keydown', function(event) {
+                let timeIncrement = 1; // секунд для перемотки
+                if (event.ctrlKey) {
+                    timeIncrement = 5; // если Ctrl, перематывать на 5 секунд
+                }
+
+                const audio = document.querySelector('audio');
+                if (!audio) return;
+                console.log(event.key);
+                switch(event.key) {
+                    case ' ':
+                        event.preventDefault();
+                        if (audio.paused) {
+                            audio.play();
+                        } else {
+                            audio.pause();
+                        }
+                        break;
+                    case 'ArrowLeft':
+                        audio.currentTime = Math.max(0, audio.currentTime - timeIncrement);
+                        break;
+                    case 'ArrowRight':
+                        audio.currentTime = Math.min(audio.duration, audio.currentTime + timeIncrement);
+                        break;
+                    case 'ArrowUp':
+                        audio.playbackRate = Math.min(4, audio.playbackRate + 0.1);
+                        document.getElementById('speed').textContent = audio.playbackRate.toFixed(1);
+                        break;
+                    case 'ArrowDown':
+                        audio.playbackRate = Math.max(0.1, audio.playbackRate - 0.1);
+                        document.getElementById('speed').textContent = audio.playbackRate.toFixed(1);
+                        break;
+                }
+            });
+        </script>
+    </body>
+</html>
